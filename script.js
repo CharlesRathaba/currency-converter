@@ -12,7 +12,7 @@ const getRatesBtn = document.getElementById('get-rates-btn');
 const exchangeRates = document.getElementById('exchange-rates');
 const convertMode = document.getElementById('convert-mode');
 const exchangeMode = document.getElementById('exchange-mode');
-const toggleBtns = document.querySelectorAll('.toggleBtns');
+const toggleBtns = document.querySelectorAll('.toggle-btn');
 
 // Define API key for ExchangeRate-API
 const API_KEY = "32b77ae2722415e365d3e19d";
@@ -22,8 +22,31 @@ toggleBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
         toggleBtns.forEach((btn) => btn.classList.remove("active"));
         btn.classList.add("active");
-
         const mode = btn.getAttribute("data-mode");
-        console.log(mode);
+
+        if (mode === "convert") {
+            convertMode.style.display = "flex";
+            exchangeMode.style.display = "none";
+        } else {
+            convertMode.style.display = "none";
+            exchangeMode.style.display = "flex";
+        }
+    
     });
+});
+
+// Implement the convert currency functionality
+convertBtn.addEventListener("Click", () => {
+    const amount = amountInput.value;
+    const from = fromCurrency.value;
+    const to = toCurrency.value;
+
+    fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/pair/${from}/${to}`)
+    .then((response) => {
+        return response.json();
+    })
+    .then((data) => {
+        console.log(data);
+    })
+    .catch((error) => {});
 });
