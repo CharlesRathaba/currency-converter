@@ -36,7 +36,7 @@ toggleBtns.forEach((btn) => {
 });
 
 // Implement the convert currency functionality
-convertBtn.addEventListener("Click", () => {
+convertBtn.addEventListener("click", () => {
     const amount = amountInput.value;
     const from = fromCurrency.value;
     const to = toCurrency.value;
@@ -46,7 +46,33 @@ convertBtn.addEventListener("Click", () => {
         return response.json();
     })
     .then((data) => {
-        console.log(data);
+        const rate = data.conversion_rate;
+        const convertedAmount = (rate * amount).toFixed(2);
+        result.innerHTML = `<span class="currency-icon"></span>${convertedAmount} ${to}`;
     })
-    .catch((error) => {});
+    .catch((error) => {
+        console.log(error);
+    });
+});
+
+// Implement the get exchange rates functionality
+getRatesBtn.addEventListener("click", () => {
+    const base = baseCurrency.value;
+    fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${base}`)
+    .then((response) => {
+        return response.json()
+    })
+    .then((data) => {
+        let ratesHtml = "<h3>Exchange Rates</h3><ul>";
+        for (const [currency, rate] of Object.entries(data.conversion_rates)) {
+            if (currency !== base) {
+                ratesHtml += `<li><span class="currency-icon">${currency}</span>${currency}: ${rate.toFixed(4)}</li>`;
+            }
+        }
+        ratesHtml += "</ul>";
+        exchangeRates.innerHTML = ratesHtml;
+    })
+    .catch((error) => {
+        exchangeRates.textContent = "An error occurred while fetching exchange rates. Please try again.";
+    })
 });
